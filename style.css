@@ -1,0 +1,436 @@
+:root {
+  --primary: #6e9a3d;
+  --primary-dark: #4f7228;
+  --primary-light: #eef6e4;
+  --accent: #ff6b35;
+  --accent-dark: #e2531f;
+  --bg: #f7f7f2;
+  --card: #ffffff;
+  --border: #e6e6e0;
+  --text: #232323;
+  --muted: #767676;
+  --danger: #b3441e;
+
+  /* Playful weekday palette, Sunday(0) through Saturday(6) — used to
+     color-code the "which nights are you available" picker and the league
+     day-labels, so the same color always means the same weekday everywhere
+     in the app. Stored as R,G,B triplets so both a solid color and a soft
+     tint background can be built from the same value. */
+  --day-0-rgb: 239, 71, 111;
+  --day-1-rgb: 244, 129, 83;
+  --day-2-rgb: 217, 158, 15;
+  --day-3-rgb: 6, 150, 178;
+  --day-4-rgb: 59, 130, 246;
+  --day-5-rgb: 139, 92, 246;
+  --day-6-rgb: 219, 68, 137;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+}
+
+/* ---- Site header, styled after the Longmont/Boulder Indoor Soccer sites,
+   with a playful multi-color stripe standing in for a team's kit trim ---- */
+.site-header {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  position: relative;
+}
+.site-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%, var(--primary) 20%,
+    rgb(var(--day-2-rgb)) 20%, rgb(var(--day-2-rgb)) 40%,
+    var(--accent) 40%, var(--accent) 60%,
+    rgb(var(--day-4-rgb)) 60%, rgb(var(--day-4-rgb)) 80%,
+    rgb(var(--day-5-rgb)) 80%, rgb(var(--day-5-rgb)) 100%
+  );
+}
+.site-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+.brand-badge { flex-shrink: 0; }
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+.brand-name {
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: 0.5px;
+  color: #1a1a1a;
+}
+.brand-sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+.wrap.wide { max-width: 1200px; }
+.center { text-align: center; padding-top: 60px; }
+h1 { margin-bottom: 4px; font-weight: 700; }
+h2 {
+  font-weight: 700;
+  padding-left: 12px;
+  border-left: 5px solid var(--accent);
+}
+.sub { color: var(--muted); margin-top: 0; }
+.card-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 360px;
+  margin: 32px auto 0;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(30, 30, 20, 0.05);
+}
+.btn {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  padding: 12px 26px;
+  border: 2px solid var(--primary-dark);
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); }
+.btn:active { transform: translateY(1px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08); }
+.btn.secondary { background: #fff; color: var(--primary-dark); border-color: var(--primary); }
+.btn.secondary:hover { background: var(--primary-light); }
+.btn.primary { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); border-color: var(--accent-dark); }
+.btn.danger { background: linear-gradient(135deg, var(--danger) 0%, #8f3617 100%); border-color: #8f3617; }
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--primary-dark);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 13px;
+  padding: 6px 8px;
+  display: inline-block;
+  min-height: 32px;
+  line-height: 20px;
+  border-radius: 6px;
+  transition: background 0.12s ease;
+}
+.link-btn:hover { background: var(--primary-light); }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+.row > * { min-width: 0; max-width: 100%; }
+.row.space-between { justify-content: space-between; }
+.wrap-row { flex-wrap: wrap; }
+.stack { display: flex; flex-direction: column; gap: 10px; max-width: 420px; }
+label { display: flex; flex-direction: column; font-size: 13px; color: var(--muted); gap: 4px; }
+input, select, textarea {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  max-width: 100%;
+  background: #fff;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* iOS Safari auto-zooms the whole page in when you tap a form field with a
+   computed font-size under 16px, then you have to pinch back out — that's
+   the main cause of "zoom in and out to see stuff" on a phone. Bumping
+   fields to 16px on small screens only (so desktop keeps the tighter look)
+   stops the auto-zoom from triggering at all. */
+@media (max-width: 640px) {
+  input, select, textarea, button, .btn {
+    font-size: 16px;
+  }
+}
+/* Wide tables (admin especially) get their own horizontal scroller instead
+   of stretching the whole page wider than the screen — without this, a
+   phone has to pinch-zoom out to see the full table, then zoom back in to
+   read anything, which is the "have to zoom in and out" complaint. */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 14px; }
+th { color: var(--muted); font-weight: 600; }
+.unfilled { color: var(--danger); font-weight: 600; }
+.unfilled-row { background: #fdf1ec; }
+.manual-row { background: #fdf8e3; }
+.muted { color: var(--muted); font-size: 14px; }
+.ok { color: var(--primary-dark); font-weight: 600; }
+.error { color: var(--danger); }
+.tag {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 6px;
+  display: inline-block;
+}
+code { background: #eee; padding: 2px 6px; border-radius: 4px; }
+.link-btn.danger { color: var(--danger); }
+.link-btn.danger:hover { background: #fbe9e2; }
+.inline { display: inline-block; margin-left: 10px; }
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+.day-check {
+  --accent-rgb: 110, 154, 61;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-left: 4px solid rgb(var(--accent-rgb));
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 15px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.day-check:hover { background: rgba(var(--accent-rgb), 0.06); }
+.day-check:has(input:checked) {
+  background: rgba(var(--accent-rgb), 0.12);
+  border-color: rgb(var(--accent-rgb));
+}
+.day-check input { width: 18px; height: 18px; flex-shrink: 0; accent-color: rgb(var(--accent-rgb)); }
+
+/* Weekday color-coding — same 7 colors used for the availability day picker
+   and the league day-label pills, so "Friday" always reads the same color
+   everywhere in the app. */
+[data-day="0"] { --accent-rgb: var(--day-0-rgb); }
+[data-day="1"] { --accent-rgb: var(--day-1-rgb); }
+[data-day="2"] { --accent-rgb: var(--day-2-rgb); }
+[data-day="3"] { --accent-rgb: var(--day-3-rgb); }
+[data-day="4"] { --accent-rgb: var(--day-4-rgb); }
+[data-day="5"] { --accent-rgb: var(--day-5-rgb); }
+[data-day="6"] { --accent-rgb: var(--day-6-rgb); }
+
+.bulk-import { margin: 12px 0; }
+.bulk-import summary { cursor: pointer; margin-bottom: 10px; }
+.bulk-import textarea {
+  width: 100%;
+  max-width: 640px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.sched-block h2 { margin-top: 0; }
+.sched-scroll { overflow-x: auto; }
+.sched-grid { white-space: nowrap; min-width: 100%; }
+.sched-grid thead tr:first-child th {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  text-align: center;
+  border-bottom: none;
+}
+.sched-grid thead tr:nth-child(2) th {
+  background: var(--primary-light);
+  text-align: center;
+  font-size: 12px;
+}
+.sched-grid td { text-align: center; }
+.sched-grid td:nth-child(odd) { color: var(--muted); }
+.sched-grid tbody tr:nth-child(even) td { background: #f5faf8; }
+
+/* ---- Grouped/searchable league lists (availability form) ---- */
+.league-filter {
+  width: 100%;
+  max-width: 320px;
+  margin: 10px 0;
+}
+.league-group { margin-bottom: 16px; }
+.league-group-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+/* League checklist items: checkbox + a stacked label (league name on its
+   own line, day-of-week pill below it). Stacking instead of a single run-on
+   line is what stops the day label from getting clipped/overlapped on
+   narrow phone screens when a level name wraps. */
+.league-item { align-items: flex-start; }
+.league-item-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  min-width: 0;
+}
+.league-level {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.day-pill {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  background: rgba(var(--accent-rgb), 0.15);
+  color: rgb(var(--accent-rgb));
+  white-space: nowrap;
+}
+
+/* ---- Admin: ref PIN row, add-game league toggle, edit rows, summaries ---- */
+.pin-row { margin: 0; flex-wrap: nowrap; }
+.pin-row input { width: 90px; }
+.league-freeform-hidden { display: none; }
+.edit-row td { background: #f5f8fb; padding-top: 12px; padding-bottom: 12px; }
+.generate-summary { margin: 12px 0; }
+.generate-summary summary { cursor: pointer; margin-bottom: 8px; }
+.calendar-actions { margin: 14px 0; display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ---- RefLog: stat tiles, game cards, swap badges ---- */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.stat-tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 10px rgba(30, 30, 20, 0.05);
+}
+.stat-tile .stat-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  line-height: 1.1;
+}
+.stat-tile.accent .stat-value { color: var(--accent-dark); }
+.stat-tile .stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: 4px;
+}
+
+.game-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--primary);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(30, 30, 20, 0.04);
+}
+.game-card.given-away {
+  border-left-color: var(--muted);
+  background: #f6f6f3;
+  opacity: 0.75;
+}
+.game-card.picked-up { border-left-color: var(--accent); }
+.game-card .game-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.game-card .game-date { font-weight: 700; font-size: 15px; }
+.game-card .game-time { color: var(--muted); font-size: 13px; }
+.game-card .game-where { margin-top: 4px; font-size: 14px; }
+.game-card .game-league { color: var(--muted); font-size: 13px; }
+.game-card .game-pay {
+  font-weight: 700;
+  color: var(--primary-dark);
+  font-size: 14px;
+}
+.game-card.given-away .game-date { text-decoration: line-through; }
+.swap-badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+.swap-badge.given { background: #ececea; color: var(--muted); }
+.swap-badge.picked { background: rgba(255, 107, 53, 0.14); color: var(--accent-dark); }
+.game-actions { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+.section-tabs { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+.section-tabs a {
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+.section-tabs a.active {
+  background: var(--primary);
+  border-color: var(--primary-dark);
+  color: #fff;
+}
+.swap-form {
+  background: var(--primary-light);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+.empty-state { text-align: center; color: var(--muted); padding: 30px 10px; }
+.hidden { display: none; }

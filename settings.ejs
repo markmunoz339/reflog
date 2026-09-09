@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head><title>Settings — RefLog</title><%- include('partials-head') %></head>
+<body>
+  <%- include('partials-header') %>
+  <div class="wrap">
+    <p class="muted"><a href="/dashboard">&larr; Back to My Games</a></p>
+    <h1>Settings</h1>
+    <% if (saved) { %><p class="ok">✓ Saved.</p><% } %>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+    <section class="card">
+      <form method="POST" action="/settings" class="stack">
+        <label>Name
+          <input type="text" name="name" value="<%= ref.name %>" required />
+        </label>
+        <label>PIN (4-6 digits)
+          <input type="password" inputmode="numeric" pattern="[0-9]*" name="pin" value="<%= ref.pin %>" maxlength="6" minlength="4" required />
+        </label>
+        <label>Default pay per game ($)
+          <input type="number" step="0.01" name="default_pay" value="<%= ref.default_pay != null ? ref.default_pay : '' %>" placeholder="Leave blank if you don't get paid per game" />
+        </label>
+        <label>Timezone
+          <input type="text" name="timezone" value="<%= ref.timezone %>" placeholder="e.g. America/Denver" />
+        </label>
+        <p class="muted">Timezone only affects the calendar subscribe/download feature, so games show up at the
+        right time on your phone. Most people won't need to change this from the default.</p>
+        <button class="btn" type="submit">Save Settings</button>
+      </form>
+    </section>
+  </div>
+</body>
+</html>
