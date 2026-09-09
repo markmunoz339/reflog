@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head><title>Create Your Profile — RefLog</title><%- include('partials-head') %></head>
+<body>
+  <%- include('partials-header') %>
+  <div class="wrap center">
+    <h1>Create Your Profile</h1>
+    <p class="muted">Pick a name and a PIN — your PIN is how you'll log back in, so choose one only you know.</p>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+    <form method="POST" action="/signup" class="stack" style="margin: 0 auto;">
+      <input type="text" name="name" placeholder="Your name" required autofocus />
+      <input type="password" inputmode="numeric" pattern="[0-9]*" name="pin" placeholder="Choose a 4-6 digit PIN" maxlength="6" minlength="4" required />
+      <button class="btn" type="submit">Create Profile</button>
+    </form>
+    <p class="muted" style="margin-top:18px;">Already have a profile? <a href="/login">Log in</a></p>
+    <p class="muted"><a href="/">&larr; Back home</a></p>
+  </div>
+</body>
+</html>

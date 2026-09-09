@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>Log In — RefLog</title><%- include('partials-head') %></head>
+<body>
+  <%- include('partials-header') %>
+  <div class="wrap center">
+    <h1>Log In</h1>
+    <p class="muted">Enter your PIN to see your games.</p>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+    <form method="POST" action="/login" class="stack" style="margin: 0 auto;">
+      <input type="password" inputmode="numeric" pattern="[0-9]*" name="pin" placeholder="PIN" maxlength="6" required autofocus />
+      <button class="btn" type="submit">Continue</button>
+    </form>
+    <p class="muted" style="margin-top:18px;">New here? <a href="/signup">Create your profile</a></p>
+    <p class="muted"><a href="/">&larr; Back home</a></p>
+  </div>
+</body>
+</html>
