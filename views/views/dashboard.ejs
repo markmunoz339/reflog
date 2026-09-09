@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head><title>My Games — RefLog</title><%- include('partials-head') %></head>
+<body>
+  <%- include('partials-header') %>
+  <div class="wrap">
+    <div class="row space-between">
+      <p class="muted">Hi <strong><%= ref.name %></strong>!</p>
+      <div class="row" style="margin:0;">
+        <a class="link-btn" href="/settings">Settings</a>
+        <a class="link-btn" href="/logout">Log out</a>
+      </div>
+    </div>
+    <h1>My Games</h1>
+
+    <div class="stat-row">
+      <div class="stat-tile">
+        <div class="stat-value"><%= stats.week.count %></div>
+        <div class="stat-label">Games this week</div>
+        <div class="muted"><%= formatMoney(stats.week.pay) %></div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-value"><%= stats.month.count %></div>
+        <div class="stat-label">Games this month</div>
+        <div class="muted"><%= formatMoney(stats.month.pay) %></div>
+      </div>
+      <div class="stat-tile accent">
+        <div class="stat-value"><%= stats.allTime.count %></div>
+        <div class="stat-label">All-time games</div>
+        <div class="muted"><%= formatMoney(stats.allTime.pay) %></div>
+      </div>
+    </div>
+
+    <div class="calendar-actions">
+      <a class="btn secondary" href="/ref/<%= ref.id %>/schedule.ics">📅 Download my games</a>
+      <a class="btn secondary" href="webcal://<%= host %>/ref/<%= ref.id %>/schedule.ics">🔁 Subscribe (stays up to date)</a>
+    </div>
+    <p class="muted">"Download" grabs a one-time .ics file of every upcoming game — tap it and your phone will
+    offer to add them to your calendar app. "Subscribe" adds a calendar that automatically refreshes as you
+    add, edit, or swap games, so you never have to redownload.</p>
+
+    <section class="card">
+      <h2>Add a Game</h2>
+      <form method="POST" action="/games" class="stack">
+        <input type="hidden" name="return_tab" value="<%= tab %>" />
+        <div class="row wrap-row">
+          <input type="date" name="date" required />
+          <input type="time" name="start_time" required />
+          <input type="time" name="end_time" placeholder="End (optional)" />
+        </div>
+        <div class="row wrap-row">
+          <input type="text" name="location" placeholder="Location / field" />
+          <input type="text" name="league" placeholder="League / org" />
+          <input type="text" name="level" placeholder="Level e.g. Coed B" />
+        </div>
+        <div class="row wrap-row">
+          <input type="text" name="notes" placeholder="Notes (matchup, etc.)" />
+          <input type="number" step="0.01" name="pay" placeholder="Pay ($)" value="<%= ref.default_pay != null ? ref.default_pay : '' %>" />
+        </div>
+        <label style="flex-direction:row; align-items:center; gap:8px;">
+          <input type="checkbox" name="picked_up" id="picked-up-check" style="width:18px;height:18px;" onchange="document.getElementById('picked-up-from').classList.toggle('hidden', !this.checked)" />
+          I picked this game up from another ref
+        </label>
+        <input type="text" name="picked_up_from" id="picked-up-from" placeholder="Whose game was it?" class="hidden" />
+        <button class="btn" type="submit">Add Game</button>
+      </form>
+    </section>
+
+    <div class="section-tabs">
+      <a href="/dashboard?tab=upcoming" class="<%= tab === 'upcoming' ? 'active' : '' %>">Upcoming</a>
+      <a href="/dashboard?tab=history" class="<%= tab === 'history' ? 'active' : '' %>">History</a>
+    </div>
+
+    <% if (games.length === 0) { %>
+      <div class="empty-state">
+        <% if (tab === 'upcoming') { %>
+          <p>No upcoming games yet — add one above.</p>
+        <% } else { %>
+          <p>No past games logged yet.</p>
+        <% } %>
+      </div>
+    <% } else { %>
+      <% games.forEach(g => { %>
+        <div class="game-card <%= g.status === 'given_away' ? 'given-away' : (g.status === 'picked_up' ? 'picked-up' : '') %>" id="game-<%= g.id %>">
+          <div class="game-top">
+            <div>
+              <div class="game-date"><%= g.dateLabel %></div>
+              <div class="game-time"><%= g.startLabel %><% if (g.endLabel) { %> – <%= g.endLabel %><% } %></div>
+            </div>
+            <% if (g.payLabel) { %><div class="game-pay"><%= g.payLabel %></div><% } %>
+          </div>
+          <% if (g.location || g.league || g.level) { %>
+            <div class="game-where">
+              <%= [g.location, [g.league, g.level].filter(Boolean).join(' ')].filter(Boolean).join(' — ') %>
+            </div>
+          <% } %>
+          <% if (g.notes) { %><div class="muted"><%= g.notes %></div><% } %>
+
+          <% if (g.status === 'given_away') { %>
+            <span class="swap-badge given">Given to <%= g.swap_name || 'someone' %><%= g.swap_note ? ' — ' + g.swap_note : '' %></span>
+          <% } else if (g.status === 'picked_up') { %>
+            <span class="swap-badge picked">Picked up from <%= g.swap_name || 'someone' %><%= g.swap_note ? ' — ' + g.swap_note : '' %></span>
+          <% } %>
+
+          <div class="game-actions">
+            <button type="button" class="link-btn" onclick="toggleEdit(<%= g.id %>)">edit</button>
+            <form method="POST" action="/games/<%= g.id %>/delete" class="inline" onsubmit="return confirm('Delete this game? This can\'t be undone.')">
+              <input type="hidden" name="return_tab" value="<%= tab %>" />
+              <button class="link-btn danger" type="submit">delete</button>
+            </form>
+          </div>
+
+          <div id="edit-<%= g.id %>" style="display:none;">
+            <form method="POST" action="/games/<%= g.id %>/edit" class="stack swap-form">
+              <input type="hidden" name="return_tab" value="<%= tab %>" />
+              <div class="row wrap-row">
+                <input type="date" name="date" value="<%= g.date %>" required />
+                <input type="time" name="start_time" value="<%= g.start_time %>" required />
+                <input type="time" name="end_time" value="<%= g.end_time || '' %>" />
+              </div>
+              <div class="row wrap-row">
+                <input type="text" name="location" placeholder="Location" value="<%= g.location || '' %>" />
+                <input type="text" name="league" placeholder="League / org" value="<%= g.league || '' %>" />
+                <input type="text" name="level" placeholder="Level" value="<%= g.level || '' %>" />
+              </div>
+              <div class="row wrap-row">
+                <input type="text" name="notes" placeholder="Notes" value="<%= g.notes || '' %>" />
+                <input type="number" step="0.01" name="pay" placeholder="Pay ($)" value="<%= g.pay != null ? g.pay : '' %>" />
+              </div>
+              <label>Status
+                <select name="status" onchange="toggleSwapFields(<%= g.id %>, this.value)" id="status-<%= g.id %>">
+                  <option value="normal" <%= g.status === 'normal' ? 'selected' : '' %>>Normal — this is my game</option>
+                  <option value="picked_up" <%= g.status === 'picked_up' ? 'selected' : '' %>>Picked up from someone else</option>
+                  <option value="given_away" <%= g.status === 'given_away' ? 'selected' : '' %>>Given away to someone else</option>
+                </select>
+              </label>
+              <div id="swap-fields-<%= g.id %>" class="row wrap-row <%= g.status === 'normal' ? 'hidden' : '' %>">
+                <input type="text" name="swap_name" placeholder="Other ref's name" value="<%= g.swap_name || '' %>" />
+                <input type="text" name="swap_note" placeholder="Note (optional)" value="<%= g.swap_note || '' %>" />
+              </div>
+              <div class="row">
+                <button class="btn" type="submit">Save changes</button>
+                <button type="button" class="link-btn" onclick="toggleEdit(<%= g.id %>)">cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+
+  <script>
+    function toggleEdit(id) {
+      const el = document.getElementById('edit-' + id);
+      el.style.display = el.style.display === 'none' ? '' : 'none';
+    }
+    function toggleSwapFields(id, status) {
+      const el = document.getElementById('swap-fields-' + id);
+      el.classList.toggle('hidden', status === 'normal');
+    }
+  </script>
+</body>
+</html>
